@@ -1,7 +1,7 @@
 const express = require('express')
 const mongoose = require('mongoose')
 const dbConfig = require('./config/db.config')
-
+const cors = require('cors');
 const app = express();
 
 var corsOptions = {
@@ -27,7 +27,6 @@ mongoose
   })
   .then(() => {
     console.log("Successfully connect to MongoDB.");
-    initial();
   })
   .catch(err => {
     console.error("Connection error", err);
@@ -49,7 +48,7 @@ app.get("/", (req, res) => {
   });
   
 
-  const PORT = process.env.PORT || 8080;
+  const PORT = process.env.PORT || 5000;
   app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}.`);
   });
