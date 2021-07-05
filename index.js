@@ -1,17 +1,38 @@
 const express = require('express')
 const mongoose = require('mongoose')
+const dbConfig = require('./config/db.config')
 
 const app = express();
-const port = 3000
+
+var corsOptions = {
+    origin: "http://localhost:8081"
+  };
+  
+  app.use(cors(corsOptions));
+
 const bodyPharse = require('body-parser')
 
-mongoose.connect('mongodb://localhost/new')
-.then(function (){
-    console.log('connected to The Database')
-})
-.catch(function(){
-    console.log('Could not connected to the DB')
-})
+// mongoose.connect('mongodb://localhost/new')
+// .then(function (){
+//     console.log('connected to The Database')
+// })
+// .catch(function(){
+//     console.log('Could not connected to the DB')
+// })
+
+mongoose
+  .connect(`mongodb://${dbConfig.HOST}:${dbConfig.PORT}/${dbConfig.DB}`, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true
+  })
+  .then(() => {
+    console.log("Successfully connect to MongoDB.");
+    initial();
+  })
+  .catch(err => {
+    console.error("Connection error", err);
+    process.exit();
+  });
 
 
 app.use(bodyPharse.json())
@@ -28,6 +49,8 @@ app.get("/", (req, res) => {
   });
   
 
-app.listen(port,()=>{
-    console.log("Server Strted NOW")
-})
+  const PORT = process.env.PORT || 8080;
+  app.listen(PORT, () => {
+    console.log(`Server is running on port ${PORT}.`);
+  });
+  
