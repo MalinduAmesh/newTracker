@@ -7,7 +7,7 @@ const usersSchema = new Schema(
 			type: String,
 			required: true
 		},
-		contact: {
+		pnumber: {
 			type: String,
 			required: true
 		},
