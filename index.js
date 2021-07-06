@@ -1,8 +1,10 @@
-const express = require('express')
+const express = require('express');
+const app = express();
 const mongoose = require('mongoose')
 const dbConfig = require('./config/db.config')
 const cors = require('cors');
-const app = express();
+const bodyPharse = require('body-parser')
+const requireToken = require('./middleware/requireToken'); 
 
 var corsOptions = {
     origin: "http://localhost:8081"
@@ -10,7 +12,7 @@ var corsOptions = {
   
   app.use(cors(corsOptions));
 
-const bodyPharse = require('body-parser')
+
 
 // mongoose.connect('mongodb://localhost/new')
 // .then(function (){

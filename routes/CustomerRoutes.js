@@ -1,47 +1,44 @@
-const express  =require('express')
-const router = express.Router()
-const User = require('../model/user')
-
-
-// Get Custtomer Details
-router.get('/user', (req,res) =>{
-
-    User.find({
-
-        email:req.body.email
-
-        })
-
-        .then((result) =>{
-
-            if(result !==null){
-                res.status(200).send(result)
-            }else{
-                res.status(404).send("Error");
-            }
-           
-        })
-        
+const express = require('express');
+const router = express.Router();
+const mongoose = require('mongoose');
+const jwt = require('jsonwebtoken');
+const Users = require('../model/user');
+const jwtKey = 'jnsdnfdju38h';
+//post
+router.post('/register', async (req, res) => {
+	try {
+		const users = new Users({
+			name: req.body.name,
+			pnumber: req.body.pnumber,
+			email: req.body.email,
+			password: req.body.password
+		});
+		await users.save().then((data) => {
+			console.log(data);
+			const token = jwt.sign({ userId: users._id }, jwtKey);
+			res.send({ token });
+		});
+	} catch (error) {
+		res.status(422).send(error.message);
+	}
 });
 
-
-// Add A Customer
-router.post('/user',(req,res,next) =>{
-
-const user = new User(req.body);
-
-user.save()
-
-.then(() => {
-   res.send('User Saved')
-})
-
-
-
+router.post('/sign-in', async (req, res) => {
+	const { email, password } = req.body;
+	if (!email || !password) {
+		return res.status(422).send({ error: 'must provide email or password' });
+	}
+	const users = await Users.findOne({ email });
+	if (!users) {
+		return res.status(422).send({ error: 'must provide email or password' });
+	}
+	try {
+		await users.comparePassword(password);
+		const token = jwt.sign({ userId: users._id }, jwtKey);
+		res.send({ token });
+	} catch (err) {
+		return res.status(422).send({ error: 'must provide email or password' });
+	}
 });
 
-router.delete('/',(req,res) =>{
-    console.log("Customer Delete")
-
-});
-module.exports = router ;
+module.exports = router;
