@@ -20,6 +20,9 @@ mongoose
     process.exit();
   });
 
+  mongoose.set('useNewUrlParser', true);
+  mongoose.set('useFindAndModify', false);
+  mongoose.set('useCreateIndex', true);
 
 app.use(bodyPharse.json())
 
@@ -30,12 +33,14 @@ app.use('/customer',customer)
 app.use('/income',income)   
 
 // simple route
-app.get("/", (req, res) => {
-    res.json({ message: "Welcome to Tracker application." });
-  });
+app.get('/', requireToken, (req, res) => {
+	const data = req.users.email;
+	const data2 = req.users._id;
+	res.send(data2);
+});
   
 
-  const PORT = process.env.PORT || 5000;
+  const PORT = process.env.PORT || 3000;
   app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}.`);
   });
