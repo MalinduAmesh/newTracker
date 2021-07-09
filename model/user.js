@@ -14,7 +14,7 @@ const usersSchema = new Schema(
 		email: {
 			type: String,
 			required: true,
-			unique: true
+			unique:[true,"Email Must BE taken"],
 		},
 		password: {
 			type: String,
